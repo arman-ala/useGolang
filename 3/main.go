@@ -17,11 +17,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprint(w, "<h1>404 Not Found</h1>")
-	fmt.Fprint(w, "<p>The page you are looking for could not be found.</p>")
-	fmt.Fprintf(w, "Host: %s<br/>Path: %s<br/>RawPath: %s", r.URL.Host, r.URL.Path, r.URL.RawPath)
-	fmt.Fprint(w, "<p><a href=\"/\">Back to Home</a></p>")
+	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
 func pathHandler(w http.ResponseWriter, r *http.Request) {
