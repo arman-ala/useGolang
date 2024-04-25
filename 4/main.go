@@ -20,34 +20,31 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
-// func pathHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.URL.Path {
-// 		case "/":
-// 			homeHandler(w, r)
-// 		case "/contact":
-// 			contactHandler(w, r)
-// 		default:
-// 			notFoundHandler(w, r)
-// 	}
-// }
-
-type Router struct {}
-
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func pathHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
-	case "/":
-		homeHandler(w, r)
-	case "/contact":
-		contactHandler(w, r)
-	default:
-		notFoundHandler(w, r)
+		case "/":
+			homeHandler(w, r)
+		case "/contact":
+			contactHandler(w, r)
+		default:
+			notFoundHandler(w, r)
 	}
 }
 
+// type Router struct {}
+
+// func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+// 	switch r.URL.Path {
+// 	case "/":
+// 		homeHandler(w, r)
+// 	case "/contact":
+// 		contactHandler(w, r)
+// 	default:
+// 		notFoundHandler(w, r)
+// 	}
+// }
+
 func main() {
-	var router Router
-	// http.HandleFunc("/", pathHandler)
-	// http.HandleFunc("/contact", pathHandler) 
 	fmt.Println("Starting server on port 3000...")
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":3000", http.HandlerFunc(pathHandler))
 }
