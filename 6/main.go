@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
 	// "os"
 
 	chi "github.com/go-chi/chi/v5"
@@ -29,14 +30,35 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func faqPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "<h1>faq</h1>")
+	t, err := template.ParseFiles("FAQ.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	err = t.Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "userID")
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Contact Me!</h1><br/><p><a href=\"mailto:arman17gb@gmail.com\">arman17gb@gmail.com</a><br/>User ID =", userId, "<br/>")
+	t, err := template.ParseFiles("contact.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	data := struct {
+		UserId string
+	}{userId}
+	err = t.Execute(w, data)
+	if err != nil {
+		panic(err)
+	}
+
+	// fmt.Fprint(w, "<h1>Contact Me!</h1><br/><p><a href=\"mailto:arman17gb@gmail.com\">arman17gb@gmail.com</a><br/>User ID =", userId, "<br/>")
 }
 
 func main() {
