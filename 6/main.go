@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
+	// "os"
 
 	chi "github.com/go-chi/chi/v5"
 )
@@ -10,7 +12,18 @@ import (
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "<h1>Home Page</h1>")
+	t, err := template.ParseFiles("HomePage.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	data := struct {
+		Name string
+	}{"Arman Ala"}
+	err = t.Execute(w, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func faqPage(w http.ResponseWriter, r *http.Request) {
