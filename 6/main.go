@@ -12,61 +12,37 @@ import (
 	chi "github.com/go-chi/chi/v5"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func templateExecuter(w http.ResponseWriter, filePath string) (err error) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	templatePath := fp.Join("templates", "HomePage.gohtml")
-	t, err := template.ParseFiles(templatePath)
+	t, err := template.ParseFiles(filePath)
 	if err != nil {
 		log.Printf("parsing template error: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	data := struct {
-		Name string
-	}{"Arman Ala"}
-	err = t.Execute(w, data)
+	err = t.Execute(w, nil)
 	if err != nil {
 		log.Printf("executing template error: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	return
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	templatePath := fp.Join("templates", "HomePage.gohtml")
+	templateExecuter(w, templatePath)
 }
 
 func faqPage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
 	templatePath := fp.Join("templates", "FAQ.gohtml")
-	t, err := template.ParseFiles(templatePath)
-	if err != nil {
-		log.Printf("parsing template error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = t.Execute(w, nil)
-	if err != nil {
-		log.Printf("executing template error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	templateExecuter(w, templatePath)
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	templatePath := fp.Join("templates", "Contact.gohtml")
-	t, err := template.ParseFiles(templatePath)
-	if err != nil {
-		log.Printf("parsing template error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = t.Execute(w, nil)
-	if err != nil {
-		log.Printf("executing template error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	templateExecuter(w, templatePath)
 
 	// fmt.Fprint(w, "<h1>Contact Me!</h1><br/><p><a href=\"mailto:arman17gb@gmail.com\">arman17gb@gmail.com</a><br/>User ID =", userId, "<br/>")
 }
