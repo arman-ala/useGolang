@@ -50,20 +50,19 @@ func faqPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	userId := chi.URLParam(r, "userID")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	templatePath := fp.Join("templates", "Contact.gohtml")
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
-		panic(err)
+		log.Printf("parsing template error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-
-	data := struct {
-		UserId string
-	}{userId}
-	err = t.Execute(w, data)
+	err = t.Execute(w, nil)
 	if err != nil {
-		panic(err)
+		log.Printf("executing template error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// fmt.Fprint(w, "<h1>Contact Me!</h1><br/><p><a href=\"mailto:arman17gb@gmail.com\">arman17gb@gmail.com</a><br/>User ID =", userId, "<br/>")
@@ -72,7 +71,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := chi.NewRouter()
 	r.Get("/", homeHandler)
-	r.Get("/contact/{userID}", contactHandler)
+	r.Get("/contact", contactHandler)
 	r.Get("/faq", faqPage)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
