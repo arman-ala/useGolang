@@ -40,12 +40,15 @@ func faqPage(w http.ResponseWriter, r *http.Request) {
 	templatePath := fp.Join("templates", "FAQ.gohtml")
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
-		panic(err)
+		log.Printf("parsing template error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-
 	err = t.Execute(w, nil)
 	if err != nil {
-		panic(err)
+		log.Printf("executing template error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
